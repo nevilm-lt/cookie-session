@@ -90,16 +90,7 @@ jobs:
           node-version: "13.14"
 
         - name: Node.js 14.x
-          node-version: "14.18"
-
-        - name: Node.js 15.x
-          node-version: "15.14"
-
-        - name: Node.js 16.x
-          node-version: "16.13"
-
-        - name: Node.js 17.x
-          node-version: "17.2"
+          node-version: "14.12"
 
     steps:
     - uses: actions/checkout@v2
