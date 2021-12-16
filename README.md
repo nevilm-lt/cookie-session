@@ -34,10 +34,10 @@ $ npm install cookie-session
 ## API
 
 ```js
-var cookieSession = require('cookie-session')
-var express = require('express')
+const cookieSession = require('cookie-session')
+const express = require('express')
 
-var app = express()
+const app = express()
 
 app.use(cookieSession({
   name: 'session',
@@ -142,10 +142,10 @@ was not destroyed.
 ### Simple view counter example
 
 ```js
-var cookieSession = require('cookie-session')
-var express = require('express')
+const cookieSession = require('cookie-session')
+const express = require('express')
 
-var app = express()
+const app = express()
 
 app.set('trust proxy', 1) // trust first proxy
 
@@ -168,10 +168,10 @@ app.listen(3000)
 ### Per-user sticky max age
 
 ```js
-var cookieSession = require('cookie-session')
-var express = require('express')
+const cookieSession = require('cookie-session')
+const express = require('express')
 
-var app = express()
+const app = express()
 
 app.set('trust proxy', 1) // trust first proxy
 
@@ -198,10 +198,10 @@ user's browser (in response to user activity, for example) some kind of
 modification to the session needs be made.
 
 ```js
-var cookieSession = require('cookie-session')
-var express = require('express')
+const cookieSession = require('cookie-session')
+const express = require('express')
 
-var app = express()
+const app = express()
 
 app.use(cookieSession({
   name: 'session',
@@ -224,11 +224,11 @@ This example shows creating a custom `Keygrip` instance as the `keys` option
 to provide keys and additional signature configuration.
 
 ```js
-var cookieSession = require('cookie-session')
-var express = require('express')
-var Keygrip = require('keygrip')
+const cookieSession = require('cookie-session')
+const express = require('express')
+const Keygrip = require('keygrip')
 
-var app = express()
+const app = express()
 
 app.use(cookieSession({
   name: 'session',

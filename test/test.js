@@ -1,15 +1,17 @@
 
+'use strict'
+
 process.env.NODE_ENV = 'test'
 
-var assert = require('assert')
-var connect = require('connect')
-var request = require('supertest')
-var session = require('..')
+const assert = require('assert')
+const connect = require('connect')
+const request = require('supertest')
+const session = require('..')
 
 describe('Cookie Session', function () {
   describe('"httpOnly" option', function () {
     it('should default to "true"', function (done) {
-      var app = App()
+      const app = App()
       app.use(function (req, res, next) {
         req.session.message = 'hi'
         res.end(String(req.sessionOptions.httpOnly))
@@ -22,7 +24,7 @@ describe('Cookie Session', function () {
     })
 
     it('should use given "false"', function (done) {
-      var app = App({ httpOnly: false })
+      const app = App({ httpOnly: false })
       app.use(function (req, res, next) {
         req.session.message = 'hi'
         res.end(String(req.sessionOptions.httpOnly))
@@ -37,7 +39,7 @@ describe('Cookie Session', function () {
 
   describe('"overwrite" option', function () {
     it('should default to "true"', function (done) {
-      var app = App()
+      const app = App()
       app.use(function (req, res, next) {
         res.setHeader('Set-Cookie', [
           'session=foo; path=/fake',
@@ -54,7 +56,7 @@ describe('Cookie Session', function () {
     })
 
     it('should use given "false"', function (done) {
-      var app = App({ overwrite: false })
+      const app = App({ overwrite: false })
       app.use(function (req, res, next) {
         res.setHeader('Set-Cookie', [
           'session=foo; path=/fake',
@@ -74,7 +76,7 @@ describe('Cookie Session', function () {
 
   describe('when options.name = my.session', function () {
     it('should use my.session for cookie name', function (done) {
-      var app = App({ name: 'my.session' })
+      const app = App({ name: 'my.session' })
       app.use(function (req, res, next) {
         req.session.message = 'hi'
         res.end()
@@ -90,7 +92,7 @@ describe('Cookie Session', function () {
   describe('when options.signed = true', function () {
     describe('when options.keys are set', function () {
       it('should work', function (done) {
-        var app = connect()
+        const app = connect()
         app.use(session({
           keys: ['a', 'b']
         }))
@@ -107,7 +109,7 @@ describe('Cookie Session', function () {
 
     describe('when options.secret is set', function () {
       it('should work', function (done) {
-        var app = connect()
+        const app = connect()
         app.use(session({
           secret: 'a'
         }))
@@ -134,7 +136,7 @@ describe('Cookie Session', function () {
   describe('when options.signed = false', function () {
     describe('when app.keys are not set', function () {
       it('should work', function (done) {
-        var app = connect()
+        const app = connect()
         app.use(session({
           signed: false
         }))
@@ -153,7 +155,7 @@ describe('Cookie Session', function () {
   describe('when options.secure = true', function () {
     describe('when connection not secured', function () {
       it('should not Set-Cookie', function (done) {
-        var app = App({ secure: true })
+        const app = App({ secure: true })
         app.use(function (req, res, next) {
           process.nextTick(function () {
             req.session.message = 'hello!'
@@ -171,7 +173,7 @@ describe('Cookie Session', function () {
 
   describe('when the session contains a ;', function () {
     it('should still work', function (done) {
-      var app = App()
+      const app = App()
       app.use(function (req, res, next) {
         if (req.method === 'POST') {
           req.session.string = ';'
@@ -197,7 +199,7 @@ describe('Cookie Session', function () {
 
   describe('when the session is invalid', function () {
     it('should create new session', function (done) {
-      var app = App({ name: 'my.session', signed: false })
+      const app = App({ name: 'my.session', signed: false })
       app.use(function (req, res, next) {
         res.end(String(req.session.isNew))
       })
@@ -212,7 +214,7 @@ describe('Cookie Session', function () {
   describe('new session', function () {
     describe('when not accessed', function () {
       it('should not Set-Cookie', function (done) {
-        var app = App()
+        const app = App()
         app.use(function (req, res, next) {
           res.end('greetings')
         })
@@ -226,9 +228,9 @@ describe('Cookie Session', function () {
 
     describe('when accessed and not populated', function (done) {
       it('should not Set-Cookie', function (done) {
-        var app = App()
+        const app = App()
         app.use(function (req, res, next) {
-          var sess = req.session
+          const sess = req.session
           res.end(JSON.stringify(sess))
         })
 
@@ -241,7 +243,7 @@ describe('Cookie Session', function () {
 
     describe('when populated', function (done) {
       it('should Set-Cookie', function (done) {
-        var app = App()
+        const app = App()
         app.use(function (req, res, next) {
           req.session.message = 'hello'
           res.end()
@@ -256,10 +258,10 @@ describe('Cookie Session', function () {
   })
 
   describe('saved session', function () {
-    var cookie
+    let cookie
 
     before(function (done) {
-      var app = App()
+      const app = App()
       app.use(function (req, res, next) {
         req.session.message = 'hello'
         res.end()
@@ -277,7 +279,7 @@ describe('Cookie Session', function () {
 
     describe('when not accessed', function () {
       it('should not Set-Cookie', function (done) {
-        var app = App()
+        const app = App()
         app.use(function (req, res, next) {
           res.end('aklsjdfklasjdf')
         })
@@ -292,7 +294,7 @@ describe('Cookie Session', function () {
 
     describe('when accessed but not changed', function () {
       it('should be the same session', function (done) {
-        var app = App()
+        const app = App()
         app.use(function (req, res, next) {
           assert.strictEqual(req.session.message, 'hello')
           res.end('aklsjdfkljasdf')
@@ -305,7 +307,7 @@ describe('Cookie Session', function () {
       })
 
       it('should not Set-Cookie', function (done) {
-        var app = App()
+        const app = App()
         app.use(function (req, res, next) {
           assert.strictEqual(req.session.message, 'hello')
           res.end('aklsjdfkljasdf')
@@ -321,7 +323,7 @@ describe('Cookie Session', function () {
 
     describe('when accessed and changed', function () {
       it('should Set-Cookie', function (done) {
-        var app = App()
+        const app = App()
         app.use(function (req, res, next) {
           req.session.money = '$$$'
           res.end('klajsdlkfjadsf')
@@ -339,7 +341,7 @@ describe('Cookie Session', function () {
   describe('when session = ', function () {
     describe('null', function () {
       it('should expire the session', function (done) {
-        var app = App()
+        const app = App()
         app.use(function (req, res, next) {
           req.session = null
           res.end('lkajsdf')
@@ -352,7 +354,7 @@ describe('Cookie Session', function () {
       })
 
       it('should no longer return a session', function (done) {
-        var app = App()
+        const app = App()
         app.use(function (req, res, next) {
           req.session = null
           res.end(JSON.stringify(req.session))
@@ -367,7 +369,7 @@ describe('Cookie Session', function () {
 
     describe('{}', function () {
       it('should not Set-Cookie', function (done) {
-        var app = App()
+        const app = App()
         app.use(function (req, res, next) {
           req.session = {}
           res.end('hello, world')
@@ -382,7 +384,7 @@ describe('Cookie Session', function () {
 
     describe('{a: b}', function () {
       it('should create a session', function (done) {
-        var app = App()
+        const app = App()
         app.use(function (req, res, next) {
           req.session = { message: 'hello' }
           res.end('klajsdfasdf')
@@ -397,7 +399,7 @@ describe('Cookie Session', function () {
 
     describe('anything else', function () {
       it('should throw', function (done) {
-        var app = App()
+        const app = App()
         app.use(function (req, res, next) {
           req.session = 'aklsdjfasdf'
         })
@@ -412,7 +414,7 @@ describe('Cookie Session', function () {
   describe('req.session', function () {
     describe('.isPopulated', function () {
       it('should be false on new session', function (done) {
-        var app = App()
+        const app = App()
         app.use(function (req, res, next) {
           res.end(String(req.session.isPopulated))
         })
@@ -423,7 +425,7 @@ describe('Cookie Session', function () {
       })
 
       it('should be true after adding property', function (done) {
-        var app = App()
+        const app = App()
         app.use(function (req, res, next) {
           req.session.message = 'hello!'
           res.end(String(req.session.isPopulated))
@@ -438,7 +440,7 @@ describe('Cookie Session', function () {
 
   describe('req.sessionOptions', function () {
     it('should be the session options', function (done) {
-      var app = App({ name: 'my.session' })
+      const app = App({ name: 'my.session' })
       app.use(function (req, res, next) {
         res.end(String(req.sessionOptions.name))
       })
@@ -449,7 +451,7 @@ describe('Cookie Session', function () {
     })
 
     it('should alter the cookie setting', function (done) {
-      var app = App({ maxAge: 3600000, name: 'my.session' })
+      const app = App({ maxAge: 3600000, name: 'my.session' })
       app.use(function (req, res, next) {
         if (req.url === '/max') {
           req.sessionOptions.maxAge = 6500000
@@ -474,9 +476,9 @@ describe('Cookie Session', function () {
 })
 
 function App (options) {
-  var opts = Object.create(options || null)
+  const opts = Object.create(options || null)
   opts.keys = ['a', 'b']
-  var app = connect()
+  const app = connect()
   app.use(session(opts))
   return app
 }
@@ -488,23 +490,23 @@ function cookieHeader (cookies) {
 }
 
 function cookies (res) {
-  var headers = res.headers['set-cookie'] || []
-  var obj = Object.create(null)
+  const headers = res.headers['set-cookie'] || []
+  const obj = Object.create(null)
 
-  for (var i = 0; i < headers.length; i++) {
-    var params = Object.create(null)
-    var parts = headers[i].split(';')
-    var nvp = parts[0].split('=')
+  for (let i = 0; i < headers.length; i++) {
+    const params = Object.create(null)
+    const parts = headers[i].split(';')
+    const nvp = parts[0].split('=')
 
-    for (var j = 1; j < parts.length; j++) {
-      var pvp = parts[j].split('=')
+    for (let j = 1; j < parts.length; j++) {
+      const pvp = parts[j].split('=')
 
       params[pvp[0].trim().toLowerCase()] = pvp[1]
         ? pvp[1].trim()
         : true
     }
 
-    var ttl = params.expires
+    const ttl = params.expires
       ? Date.parse(params.expires) - Date.parse(res.headers.date)
       : null
 

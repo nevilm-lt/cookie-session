@@ -12,10 +12,10 @@
  * @private
  */
 
-var Buffer = require('safe-buffer').Buffer
-var debug = require('debug')('cookie-session')
-var Cookies = require('cookies')
-var onHeaders = require('on-headers')
+const Buffer = require('safe-buffer').Buffer
+const debug = require('debug')('cookie-session')
+const Cookies = require('cookies')
+const onHeaders = require('on-headers')
 
 /**
  * Module exports.
@@ -39,14 +39,15 @@ module.exports = cookieSession
  */
 
 function cookieSession (options) {
-  var opts = options || {}
+  const opts = options || {}
 
   // cookie name
-  var name = opts.name || 'session'
+  const name = opts.name || 'session'
 
   // secrets
-  var keys = opts.keys
-  if (!keys && opts.secret) keys = [opts.secret]
+  const keys = !opts.keys && opts.secret
+    ? [opts.secret]
+    : opts.keys
 
   // defaults
   if (opts.overwrite == null) opts.overwrite = true
@@ -58,10 +59,10 @@ function cookieSession (options) {
   debug('session options %j', opts)
 
   return function _cookieSession (req, res, next) {
-    var cookies = new Cookies(req, res, {
+    const cookies = new Cookies(req, res, {
       keys: keys
     })
-    var sess
+    let sess
 
     // for overriding
     req.sessionOptions = Object.create(opts)
@@ -150,7 +151,7 @@ function Session (ctx, obj) {
   })
 
   if (obj) {
-    for (var key in obj) {
+    for (const key in obj) {
       this[key] = obj[key]
     }
   }
@@ -162,7 +163,7 @@ function Session (ctx, obj) {
  */
 
 Session.create = function create (obj) {
-  var ctx = new SessionContext()
+  const ctx = new SessionContext()
   return new Session(ctx, obj)
 }
 
@@ -172,8 +173,8 @@ Session.create = function create (obj) {
  */
 
 Session.deserialize = function deserialize (str) {
-  var ctx = new SessionContext()
-  var obj = decode(str)
+  const ctx = new SessionContext()
+  const obj = decode(str)
 
   ctx._new = false
   ctx._val = str
@@ -249,7 +250,7 @@ function SessionContext () {
  */
 
 function decode (string) {
-  var body = Buffer.from(string, 'base64').toString('utf8')
+  const body = Buffer.from(string, 'base64').toString('utf8')
   return JSON.parse(body)
 }
 
@@ -262,7 +263,7 @@ function decode (string) {
  */
 
 function encode (body) {
-  var str = JSON.stringify(body)
+  const str = JSON.stringify(body)
   return Buffer.from(str).toString('base64')
 }
 
@@ -272,7 +273,7 @@ function encode (body) {
  */
 
 function tryGetSession (cookies, name, opts) {
-  var str = cookies.get(name, opts)
+  const str = cookies.get(name, opts)
 
   if (!str) {
     return undefined
